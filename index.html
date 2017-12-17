@@ -2,11 +2,20 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Apka</title>
+    <title>Timer!</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
   <body>
-    <div id="app"></div> 
-
-    <script type="text/javascript" src="script.js"></script>
+    <nav class="controls">
+      <a href="#" class="button" id="start">Start</a>
+      <a href="#" class="button" id="stop">Stop</a>
+      <a href="#" class="button" id="restart">Restart</a>
+      <a href="#" class="button" id="save">Save the Result</a>
+    </nav>
+    <div class="stopwatch"></div>
+    <h1>Results List:</h1>
+    <ul class="results"></ul>
+    <a href="#" class="button" id="reset-list">Reset the results list!</a>
+    <script type="text/javascript" src="script-compiled.js"></script>
   </body>
 </html>
