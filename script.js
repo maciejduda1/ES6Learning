@@ -1,35 +1,93 @@
-﻿// Zadanie 1
+﻿class Stopwatch {
+	constructor(display){
+		this.running = false;
+		this.display = display;
+		this.reset();
+		this.print(this.times);
+	}
+	
+	reset() {
+		this.times = {
+			minutes: 0,
+			seconds: 0,
+			miliseconds: 0
+		};
+	}
 
-const string1 = 'Hello';
-const string2 =  'World';
-function helloWorld(string1, string2){
-	console.log(`${string1} ${string2}`);
+	print() {
+		this.display.innerText = this.format(this.times);
+	}
+
+	format(times) {
+		return `${pad0(times.minutes)} : ${pad0(times.seconds)} : ${pad0(Math.floor(times.miliseconds))}`;
+	}
+	start() {
+		if (!this.running){
+			this.running = true;
+			this.watch = setInterval(() => this.step(), 10);
+		}
+	}
+
+	step() {
+		if (!this.running) return;
+		this.calculate();
+		this.print();
+	}
+
+	calculate() {
+		this.times.miliseconds += 1;
+		if(this.times.miliseconds >= 100) {
+			this.times.seconds += 1;
+			this.times.miliseconds = 0;
+		}
+		if (this.times.seconds >= 60) {
+			this.times.minutes += 1;
+			this.times.seconds = 0;
+		}
+	}
+
+	stop() {
+		this.running = false;
+		clearInterval(this.watch);
+	}
+
+	saveResult(){ 
+		const newList = document.querySelector(".results");
+		const newResult = document.createElement("li");
+		newResult.innerHTML = this.display.innerText;
+		newList.appendChild(newResult);
+	}
+
+	resetResultList(){
+		const newList = document.querySelector(".results");
+		while (newList.hasChildNodes()) {
+			newList.removeChild(newList.firstChild);
+		}
+	}
 }
-helloWorld(string1, string2);
 
-// Zadanie 2
+function pad0(value){
+		let result = value.toString();
+		if (result.length < 2) {
+			result = '0' + result;
+		}
+		return result;
+	}
 
-// function multiply (a=1, b=1){return a*b}
-const multiply = (a=1, b=1) => a*b
+const stopwatch = new Stopwatch(
+	document.querySelector('.stopwatch'));
 
-console.log(multiply(5,4));
-console.log(multiply(5));
+var startButton = document.getElementById('start');
+startButton.addEventListener('click', () => stopwatch.start());
 
-// Zadanie 3
+var stopButton = document.getElementById('stop');
+stopButton.addEventListener('click', () => stopwatch.stop());
 
-const avarage = (...arg) => arg.reduce((a,b) => a+b)/arg.length;  
-console.log(avarage(2));
-console.log(avarage(5,10,20));
+var restartButton = document.getElementById('restart');
+restartButton.addEventListener('click', () => {stopwatch.reset(); stopwatch.print()});
 
-//Zadanie 4
+var saveButton = document.getElementById('save');
+saveButton.addEventListener('click', () => stopwatch.saveResult());
 
-const grades = [1, 5, 5, 5, 4, 3, 3, 2, 1];
-console.log(avarage(...grades)); 
-
-//Zadanie5
-
-const strangeTable = [1, 4, 'Iwona', false, 'Nowak'];
-const [, , firstname, , lastname] = strangeTable
-
-console.log(firstname);
-console.log(lastname);
+var resetListButton = document.getElementById('reset-list');
+resetListButton.addEventListener('click', () => stopwatch.resetResultList());
