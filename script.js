@@ -1,69 +1,98 @@
-﻿/*
-class Stopwatch {
-	constructor(display){
-		this.running = false;
-		this.display = display;
-		this.reset();
-		this.print(this.times);
+﻿
+class Stopwatch extends React.Component {
+	constructor() {
+		super();
+		this.state = {
+			running: false,
+			times : {
+				minutes: 0,
+				seconds: 0,
+				miliseconds: 0
+			}
+		};
+		this.start = this.start.bind(this);
+		this.stop = this.stop.bind(this);
+		this.reset= this.reset.bind(this);
+		this.saveResult=this.saveResult.bind(this);
 	}
 	
-	reset() {
-		this.times = {
-			minutes: 0,
-			seconds: 0,
-			miliseconds: 0
-		};
-	}
-
 	print() {
-		this.display.innerText = this.format(this.times);
+	//		console.log(this.format(this.state.times));	
+		return	this.innerText = this.format(this.state.times);
 	}
 
 	format(times) {
 		return `${pad0(times.minutes)} : ${pad0(times.seconds)} : ${pad0(Math.floor(times.miliseconds))}`;
 	}
+
+	reset() {
+		this.setState({
+			times : {
+				minutes: 0,
+				seconds: 0,
+				miliseconds: 0
+			}
+		})
+	}
+
 	start() {
-		if (!this.running){
-			this.running = true;
+		if (!this.state.running){
+			this.setState({
+				running : true
+			});
 			this.watch = setInterval(() => this.step(), 10);
 		}
 	}
 
 	step() {
-		if (!this.running) return;
+		//console.log(this.state);
+		if (!this.state.running) return;
 		this.calculate();
 		this.print();
 	}
 
 	calculate() {
-		this.times.miliseconds += 1;
-		if(this.times.miliseconds >= 100) {
-			this.times.seconds += 1;
-			this.times.miliseconds = 0;
+		//console.log(this.state.times);
+		this.setState({times: {minutes: this.state.times.minutes, seconds: this.state.times.seconds, miliseconds : this.state.times.miliseconds +=1} })
+		if(this.state.times.miliseconds >= 100) {
+			this.setState({times: {minutes: this.state.times.minutes, seconds: this.state.times.seconds += 1, miliseconds: this.state.times.miliseconds = 0} })
 		}
-		if (this.times.seconds >= 60) {
-			this.times.minutes += 1;
-			this.times.seconds = 0;
+		//console.log(this.state.times);
+		if (this.state.times.seconds >= 60) {
+			this.setState({times: { minutes: this.state.times.minutes += 1, seconds:this.state.times.seconds = 0, miliseconds: this.state.times.miliseconds}})
 		}
 	}
 
 	stop() {
-		this.running = false;
+		this.setState({running : false})
 		clearInterval(this.watch);
 	}
 
 	saveResult(){ 
-		const newList = document.querySelector(".results");
 		const newResult = document.createElement("li");
-		newResult.innerHTML = this.display.innerText;
-		newList.appendChild(newResult);
+		newResult.innerHTML = this.innerText;
+		resultsList.appendChild(newResult);
 	}
 
 	resetResultList(){
-		const newList = document.querySelector(".results");
-		while (newList.hasChildNodes()) {
-			newList.removeChild(newList.firstChild);
-		}
+	 resultsList.innerHTML = "";
+	}
+
+	render(){ 
+		return(
+			React.createElement('div',{},
+				React.createElement('button',{onClick: this.start},'Start'),
+				React.createElement('button',{onClick: this.stop},'Stop'),
+				React.createElement('button',{onClick: this.reset},'Reset'),
+				React.createElement('div',{},
+					React.createElement('p',{}, this.print())
+				),
+				React.createElement('h1',{},'Lista Wyników'),
+				React.createElement('ul',{id:"resultsList"},),
+				React.createElement('button',{onClick: this.resetResultList}, 'Zresetuj listę'),
+				React.createElement('button',{onClick: this.saveResult},'Zapisz wynik')
+			)
+		);
 	}
 }
 
@@ -75,130 +104,5 @@ function pad0(value){
 		return result;
 	}
 
-const stopwatch = new Stopwatch(
-	document.querySelector('.stopwatch'));
-
-var startButton = document.getElementById('start');
-startButton.addEventListener('click', () => stopwatch.start());
-
-var stopButton = document.getElementById('stop');
-stopButton.addEventListener('click', () => stopwatch.stop());
-
-var restartButton = document.getElementById('restart');
-restartButton.addEventListener('click', () => {stopwatch.reset(); stopwatch.print()});
-
-var saveButton = document.getElementById('save');
-saveButton.addEventListener('click', () => stopwatch.saveResult());
-
-var resetListButton = document.getElementById('reset-list');
-resetListButton.addEventListener('click', () => stopwatch.resetResultList());
-*/
-
-class Stopwatch extends React.Component {
-	constructor(display){
-		super(display);
-		this.state = {
-			running: false,
-			display: display,
-		};
-		this.reset();
-		this.print(this.times);
-	}
-
-
-	reset() {
-		this.times = {
-			minutes: 0,
-			seconds: 0,
-			miliseconds: 0
-		};
-	}
-
-	print() {
-		this.display.innerText = this.format(this.times);
-	}
-
-	format(times) {
-		return `${pad0(times.minutes)} : ${pad0(times.seconds)} : ${pad0(Math.floor(times.miliseconds))}`;
-	}
-	start() {
-		if (!this.running){
-			this.running = true;
-			this.watch = setInterval(() => this.step(), 10);
-		}
-	}
-
-	step() {
-		if (!this.running) return;
-		this.calculate();
-		this.print();
-	}
-
-	calculate() {
-		this.times.miliseconds += 1;
-		if(this.times.miliseconds >= 100) {
-			this.times.seconds += 1;
-			this.times.miliseconds = 0;
-		}
-		if (this.times.seconds >= 60) {
-			this.times.minutes += 1;
-			this.times.seconds = 0;
-		}
-	}
-
-	stop() {
-		this.running = false;
-		clearInterval(this.watch);
-	}
-
-	saveResult(){ 
-		const newList = document.querySelector(".results");
-		const newResult = document.createElement("li");
-		newResult.innerHTML = this.display.innerText;
-		newList.appendChild(newResult);
-	}
-
-	resetResultList(){
-		const newList = document.querySelector(".results");
-		while (newList.hasChildNodes()) {
-			newList.removeChild(newList.firstChild);
-		}
-	}
-}
-
-
-console.log(React.createElement(Stopwatch,{}));
-
-function pad0(value){
-	let result = value.toString();
-	if (result.length < 2) {
-		result = '0' + result;
-	}
-	return result;
-}
-
-const stopwatch = React.createElement(Stopwatch, {});
-ReactDOM.render(stopwatch, document.querySelector('.stopwatch'));
-
-
-/*
-const stopwatch = new Stopwatch(
-	document.querySelector('.stopwatch'));
-
-var startButton = document.getElementById('start');
-startButton.addEventListener('click', () => stopwatch.start());
-
-var stopButton = document.getElementById('stop');
-stopButton.addEventListener('click', () => stopwatch.stop());
-
-var restartButton = document.getElementById('restart');
-restartButton.addEventListener('click', () => {stopwatch.reset(); stopwatch.print()});
-
-var saveButton = document.getElementById('save');
-saveButton.addEventListener('click', () => stopwatch.saveResult());
-
-var resetListButton = document.getElementById('reset-list');
-resetListButton.addEventListener('click', () => stopwatch.resetResultList());
-
-
-*/
+const stopWatch = React.createElement(Stopwatch,{});
+ReactDOM.render(stopWatch, document.getElementById('stopwatch'));
