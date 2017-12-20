@@ -2,6 +2,8 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -22,19 +24,21 @@ var Stopwatch = function (_React$Component) {
 				minutes: 0,
 				seconds: 0,
 				miliseconds: 0
-			}
+			},
+			resultsArray: []
 		};
 		_this.start = _this.start.bind(_this);
 		_this.stop = _this.stop.bind(_this);
 		_this.reset = _this.reset.bind(_this);
 		_this.saveResult = _this.saveResult.bind(_this);
+		_this.resetResultList = _this.resetResultList.bind(_this);
 		return _this;
 	}
 
 	_createClass(Stopwatch, [{
 		key: "print",
 		value: function print() {
-			//		console.log(this.format(this.state.times));	
+			//console.log(this.format(this.state.times));	
 			return this.innerText = this.format(this.state.times);
 		}
 	}, {
@@ -97,23 +101,105 @@ var Stopwatch = function (_React$Component) {
 	}, {
 		key: "saveResult",
 		value: function saveResult() {
-			var newResult = document.createElement("li");
-			newResult.innerHTML = this.innerText;
-			resultsList.appendChild(newResult);
+			this.setState({
+				resultsArray: [].concat(_toConsumableArray(this.state.resultsArray), [this.print()])
+			});
+			//console.log(this.state.resultsArray);
 		}
 	}, {
 		key: "resetResultList",
 		value: function resetResultList() {
-			resultsList.innerHTML = "";
+			this.setState({
+				resultsArray: []
+			});
 		}
 	}, {
 		key: "render",
 		value: function render() {
-			return React.createElement('div', {}, React.createElement('button', { onClick: this.start }, 'Start'), React.createElement('button', { onClick: this.stop }, 'Stop'), React.createElement('button', { onClick: this.reset }, 'Reset'), React.createElement('div', {}, React.createElement('p', {}, this.print())), React.createElement('h1', {}, 'Lista Wyników'), React.createElement('ul', { id: "resultsList" }), React.createElement('button', { onClick: this.resetResultList }, 'Zresetuj listę'), React.createElement('button', { onClick: this.saveResult }, 'Zapisz wynik'));
+			return React.createElement(
+				"div",
+				null,
+				React.createElement(
+					"button",
+					{ onClick: this.start },
+					"Start"
+				),
+				React.createElement(
+					"button",
+					{ onClick: this.stop },
+					"Stop"
+				),
+				React.createElement(
+					"button",
+					{ onClick: this.reset },
+					"Reset"
+				),
+				React.createElement(
+					"div",
+					null,
+					React.createElement(
+						"p",
+						null,
+						this.print()
+					)
+				),
+				React.createElement(
+					"div",
+					null,
+					React.createElement(
+						"h1",
+						null,
+						"Lista Wyników"
+					),
+					React.createElement(ResultList, { resultsInArray: this.state.resultsArray }),
+					React.createElement(
+						"button",
+						{ onClick: this.saveResult },
+						"Zapisz wynik"
+					),
+					React.createElement(
+						"button",
+						{ onClick: this.resetResultList },
+						"Resetuj tablicę"
+					)
+				)
+			);
 		}
 	}]);
 
 	return Stopwatch;
+}(React.Component);
+
+var ResultList = function (_React$Component2) {
+	_inherits(ResultList, _React$Component2);
+
+	function ResultList(resultsInArray) {
+		_classCallCheck(this, ResultList);
+
+		return _possibleConstructorReturn(this, (ResultList.__proto__ || Object.getPrototypeOf(ResultList)).call(this));
+	}
+
+	_createClass(ResultList, [{
+		key: "render",
+		value: function render() {
+			//console.log(this.props.resultsInArray);
+			var table = this.props.resultsInArray.map(function (result) {
+				return React.createElement(
+					"li",
+					{ key: result },
+					result
+				);
+			});
+			//console.log(table);
+			return React.createElement(
+				"ul",
+				null,
+				table
+			);
+		}
+	}]);
+
+	return ResultList;
 }(React.Component);
 
 function pad0(value) {
@@ -126,3 +212,38 @@ function pad0(value) {
 
 var stopWatch = React.createElement(Stopwatch, {});
 ReactDOM.render(stopWatch, document.getElementById('stopwatch'));
+
+/*
+class ResultList extends React.Component {
+<ResultList timeValue={this.print()} />
+	propTypes: {
+		timeValue: React.PropTypes.string.IsRequired
+	}
+
+	constructor(timeValue){
+		super(timeValue);
+		this.state={
+			timeResultTable: [] 
+		};
+		this.saveResult=this.saveResult.bind(this);
+	}
+
+	saveResult(){
+	this.setState({timeResultTable: this.props.timeValue})
+	console.log(this.state.timeResultTable);
+	}
+
+
+
+	
+	render(){
+		return(
+				
+		);
+	}
+}
+
+/*ResultList.propTypes = {
+	
+}
+*/

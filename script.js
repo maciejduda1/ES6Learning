@@ -8,16 +8,18 @@ class Stopwatch extends React.Component {
 				minutes: 0,
 				seconds: 0,
 				miliseconds: 0
-			}
+			},
+			resultsArray: []
 		};
 		this.start = this.start.bind(this);
 		this.stop = this.stop.bind(this);
 		this.reset= this.reset.bind(this);
 		this.saveResult=this.saveResult.bind(this);
+		this.resetResultList = this.resetResultList.bind(this);
 	}
 	
 	print() {
-	//		console.log(this.format(this.state.times));	
+		//console.log(this.format(this.state.times));	
 		return	this.innerText = this.format(this.state.times);
 	}
 
@@ -69,29 +71,53 @@ class Stopwatch extends React.Component {
 	}
 
 	saveResult(){ 
-		const newResult = document.createElement("li");
-		newResult.innerHTML = this.innerText;
-		resultsList.appendChild(newResult);
+		this.setState({
+			resultsArray: [...this.state.resultsArray, this.print()]
+		});
+		//console.log(this.state.resultsArray);
 	}
 
 	resetResultList(){
-	 resultsList.innerHTML = "";
+	 this.setState({
+			resultsArray: []
+		});
 	}
 
 	render(){ 
 		return(
-			React.createElement('div',{},
-				React.createElement('button',{onClick: this.start},'Start'),
-				React.createElement('button',{onClick: this.stop},'Stop'),
-				React.createElement('button',{onClick: this.reset},'Reset'),
-				React.createElement('div',{},
-					React.createElement('p',{}, this.print())
-				),
-				React.createElement('h1',{},'Lista Wyników'),
-				React.createElement('ul',{id:"resultsList"},),
-				React.createElement('button',{onClick: this.resetResultList}, 'Zresetuj listę'),
-				React.createElement('button',{onClick: this.saveResult},'Zapisz wynik')
-			)
+			<div>
+				<button onClick = {this.start}>{"Start"}</button>
+				<button onClick = {this.stop}>{"Stop"}</button>
+				<button onClick = {this.reset}>{"Reset"}</button>
+				<div>
+					<p>{this.print()}</p>
+				</div>
+				<div>
+					<h1>{"Lista Wyników"}</h1>
+					<ResultList resultsInArray = {this.state.resultsArray} />
+					<button onClick = {this.saveResult}>{"Zapisz wynik"}</button>
+					<button onClick = {this.resetResultList}>{"Resetuj tablicę"}</button>
+				</div>
+			</div>
+		);
+	}
+}
+
+class ResultList extends React.Component {
+	propTypes: {
+		resultsInArray: React.PropTypes.Array.IsRequired
+	}
+	constructor(resultsInArray){
+		super()
+	}
+
+	render(){
+		//console.log(this.props.resultsInArray);
+		const table = this.props.resultsInArray.map((result) => {
+			return <li key={result}>{result}</li> });
+		//console.log(table);
+		return (
+			<ul>{table}</ul>
 		);
 	}
 }
@@ -106,3 +132,46 @@ function pad0(value){
 
 const stopWatch = React.createElement(Stopwatch,{});
 ReactDOM.render(stopWatch, document.getElementById('stopwatch'));
+
+
+
+
+
+
+
+/*
+class ResultList extends React.Component {
+<ResultList timeValue={this.print()} />
+	propTypes: {
+		timeValue: React.PropTypes.string.IsRequired
+	}
+
+	constructor(timeValue){
+		super(timeValue);
+		this.state={
+			timeResultTable: [] 
+		};
+		this.saveResult=this.saveResult.bind(this);
+	}
+
+	saveResult(){
+	this.setState({timeResultTable: this.props.timeValue})
+	console.log(this.state.timeResultTable);
+	}
+
+
+
+	
+	render(){
+		return(
+				
+		);
+	}
+}
+
+/*ResultList.propTypes = {
+	
+}
+*/
+
+
