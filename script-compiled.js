@@ -1,51 +1,249 @@
-'use strict';
+"use strict";
 
-// Zadanie 1
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var string1 = 'Hello';
-var string2 = 'World';
-function helloWorld(string1, string2) {
-	console.log(string1 + ' ' + string2);
-}
-helloWorld(string1, string2);
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-// Zadanie 2
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// function multiply (a=1, b=1){return a*b}
-var multiply = function multiply() {
-	var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-	var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-	return a * b;
-};
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-console.log(multiply(5, 4));
-console.log(multiply(5));
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// Zadanie 3
+var Stopwatch = function (_React$Component) {
+	_inherits(Stopwatch, _React$Component);
 
-var avarage = function avarage() {
-	for (var _len = arguments.length, arg = Array(_len), _key = 0; _key < _len; _key++) {
-		arg[_key] = arguments[_key];
+	function Stopwatch() {
+		_classCallCheck(this, Stopwatch);
+
+		var _this = _possibleConstructorReturn(this, (Stopwatch.__proto__ || Object.getPrototypeOf(Stopwatch)).call(this));
+
+		_this.state = {
+			running: false,
+			times: {
+				minutes: 0,
+				seconds: 0,
+				miliseconds: 0
+			},
+			resultsArray: []
+		};
+		_this.start = _this.start.bind(_this);
+		_this.stop = _this.stop.bind(_this);
+		_this.reset = _this.reset.bind(_this);
+		_this.saveResult = _this.saveResult.bind(_this);
+		_this.resetResultList = _this.resetResultList.bind(_this);
+		return _this;
 	}
 
-	return arg.reduce(function (a, b) {
-		return a + b;
-	}) / arg.length;
-};
-console.log(avarage(2));
-console.log(avarage(5, 10, 20));
+	_createClass(Stopwatch, [{
+		key: "print",
+		value: function print() {
+			//console.log(this.format(this.state.times));	
+			return this.innerText = this.format(this.state.times);
+		}
+	}, {
+		key: "format",
+		value: function format(times) {
+			return pad0(times.minutes) + " : " + pad0(times.seconds) + " : " + pad0(Math.floor(times.miliseconds));
+		}
+	}, {
+		key: "reset",
+		value: function reset() {
+			this.setState({
+				times: {
+					minutes: 0,
+					seconds: 0,
+					miliseconds: 0
+				}
+			});
+		}
+	}, {
+		key: "start",
+		value: function start() {
+			var _this2 = this;
 
-//Zadanie 4
+			if (!this.state.running) {
+				this.setState({
+					running: true
+				});
+				this.watch = setInterval(function () {
+					return _this2.step();
+				}, 10);
+			}
+		}
+	}, {
+		key: "step",
+		value: function step() {
+			//console.log(this.state);
+			if (!this.state.running) return;
+			this.calculate();
+			this.print();
+		}
+	}, {
+		key: "calculate",
+		value: function calculate() {
+			//console.log(this.state.times);
+			this.setState({ times: { minutes: this.state.times.minutes, seconds: this.state.times.seconds, miliseconds: this.state.times.miliseconds += 1 } });
+			if (this.state.times.miliseconds >= 100) {
+				this.setState({ times: { minutes: this.state.times.minutes, seconds: this.state.times.seconds += 1, miliseconds: this.state.times.miliseconds = 0 } });
+			}
+			//console.log(this.state.times);
+			if (this.state.times.seconds >= 60) {
+				this.setState({ times: { minutes: this.state.times.minutes += 1, seconds: this.state.times.seconds = 0, miliseconds: this.state.times.miliseconds } });
+			}
+		}
+	}, {
+		key: "stop",
+		value: function stop() {
+			this.setState({ running: false });
+			clearInterval(this.watch);
+		}
+	}, {
+		key: "saveResult",
+		value: function saveResult() {
+			this.setState({
+				resultsArray: [].concat(_toConsumableArray(this.state.resultsArray), [this.print()])
+			});
+			//console.log(this.state.resultsArray);
+		}
+	}, {
+		key: "resetResultList",
+		value: function resetResultList() {
+			this.setState({
+				resultsArray: []
+			});
+		}
+	}, {
+		key: "render",
+		value: function render() {
+			return React.createElement(
+				"div",
+				null,
+				React.createElement(
+					"button",
+					{ onClick: this.start },
+					"Start"
+				),
+				React.createElement(
+					"button",
+					{ onClick: this.stop },
+					"Stop"
+				),
+				React.createElement(
+					"button",
+					{ onClick: this.reset },
+					"Reset"
+				),
+				React.createElement(
+					"div",
+					null,
+					React.createElement(
+						"p",
+						null,
+						this.print()
+					)
+				),
+				React.createElement(
+					"div",
+					null,
+					React.createElement(
+						"h1",
+						null,
+						"Lista Wyników"
+					),
+					React.createElement(ResultList, { resultsInArray: this.state.resultsArray }),
+					React.createElement(
+						"button",
+						{ onClick: this.saveResult },
+						"Zapisz wynik"
+					),
+					React.createElement(
+						"button",
+						{ onClick: this.resetResultList },
+						"Resetuj tablicę"
+					)
+				)
+			);
+		}
+	}]);
 
-var grades = [1, 5, 5, 5, 4, 3, 3, 2, 1];
-console.log(avarage.apply(undefined, grades));
+	return Stopwatch;
+}(React.Component);
 
-//Zadanie5
+var ResultList = function (_React$Component2) {
+	_inherits(ResultList, _React$Component2);
 
-var strangeTable = [1, 4, 'Iwona', false, 'Nowak'];
-var firstname = strangeTable[2],
-    lastname = strangeTable[4];
+	function ResultList(resultsInArray) {
+		_classCallCheck(this, ResultList);
+
+		return _possibleConstructorReturn(this, (ResultList.__proto__ || Object.getPrototypeOf(ResultList)).call(this));
+	}
+
+	_createClass(ResultList, [{
+		key: "render",
+		value: function render() {
+			//console.log(this.props.resultsInArray);
+			var table = this.props.resultsInArray.map(function (result) {
+				return React.createElement(
+					"li",
+					{ key: result },
+					result
+				);
+			});
+			//console.log(table);
+			return React.createElement(
+				"ul",
+				null,
+				table
+			);
+		}
+	}]);
+
+	return ResultList;
+}(React.Component);
+
+function pad0(value) {
+	var result = value.toString();
+	if (result.length < 2) {
+		result = '0' + result;
+	}
+	return result;
+}
+
+var stopWatch = React.createElement(Stopwatch, {});
+ReactDOM.render(stopWatch, document.getElementById('stopwatch'));
+
+/*
+class ResultList extends React.Component {
+<ResultList timeValue={this.print()} />
+	propTypes: {
+		timeValue: React.PropTypes.string.IsRequired
+	}
+
+	constructor(timeValue){
+		super(timeValue);
+		this.state={
+			timeResultTable: [] 
+		};
+		this.saveResult=this.saveResult.bind(this);
+	}
+
+	saveResult(){
+	this.setState({timeResultTable: this.props.timeValue})
+	console.log(this.state.timeResultTable);
+	}
 
 
-console.log(firstname);
-console.log(lastname);
+
+	
+	render(){
+		return(
+				
+		);
+	}
+}
+
+/*ResultList.propTypes = {
+	
+}
+*/
